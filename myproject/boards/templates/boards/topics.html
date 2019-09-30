@@ -1,0 +1,9 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'boards/css/bootstrap.min.css' %}">
+<title>{{ board.name }}</title>
+<div class="container">
+    <ol class="breadcrumb my-4">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Boards</a></li>
+        <li class="breadcrumb-item active">{{ board.name }}</li>
+    </ol>
+</div>
