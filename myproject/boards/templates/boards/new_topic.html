@@ -1,0 +1,13 @@
+{% extends 'boards/base.html' %}
+{% block title%}Sart New Topic{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'index' %}">Boards</a></li>
+<li class="breadcrumb-item"><a href="{% url 'topics' board.pk %}">{{board.name}}</a></li>
+<li class="breadcrumb-item active">New Topic</li>
+{% endblock %}
+
+{% block content %}
+{% include 'boards/includes/form.html' %}
+{% endblock %}
+</div>
