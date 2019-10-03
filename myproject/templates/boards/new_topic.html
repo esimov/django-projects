@@ -8,6 +8,10 @@
 {% endblock %}
 
 {% block content %}
-{% include 'boards/includes/form.html' %}
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include 'boards/includes/form.html' %}
+    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+</form>
 {% endblock %}
 </div>
