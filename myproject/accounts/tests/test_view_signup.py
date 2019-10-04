@@ -11,14 +11,10 @@ class SignupTest(TestCase):
         self.response = self.client.get(url)
 
     def test_signup_page_exists(self):
-        signup_url = reverse('signup')
-        response = self.client.get(signup_url)
-        self.assertTrue(response.status_code, 200)
+        self.assertTrue(self.response.status_code, 200)
 
     def test_signup_contains_csrf(self):
-        signup_url = reverse('signup')
-        response = self.client.get(signup_url)
-        self.assertContains(response, "csrfmiddlewaretoken")
+        self.assertContains(self.response, "csrfmiddlewaretoken")
 
     def test_contains_form(self):
         form = self.response.context.get('form')
@@ -30,6 +26,7 @@ class SuccessfulSignupTest(TestCase):
         signup_url = reverse('signup')
         data = {
             'username': 'test_account',
+            'email': 'test_account@example.com',
             'password1': 'admin123',
             'password2': 'admin123',
         }
