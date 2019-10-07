@@ -23,17 +23,36 @@ class PasswordResetViewTest(TestCase):
 
 class SuccessfulPasswordResetTest(TestCase):
     def setUp(self):
-        user_data = {
-            'username': 'test_account',
-            'email': 'test_account@example.com',
-            'password': 'admin123'
-        }
-        User.objects.create_user(user_data)
+        email = 'john.doe@example.com'
+        User.objects.create_user(
+            username='john.doe', email=email, password='admin123')
         url = reverse('password_reset')
-        self.response = self.client.post(url, {'email': user_data['email']})
+        self.response = self.client.post(url, {'email': email})
 
     def test_reset_password_should_redirect(self):
         self.assertRedirects(self.response, reverse('password_reset_done'))
 
     def test_send_password_reset_email(self):
         self.assertEqual(1, len(mail.outbox))
+
+
+class InvalidPasswordResetTest(TestCase):
+    def setUp(self):
+        url = reverse('password_reset')
+        self.response = self.client.post(
+            url, {'email': 'invalid_user_account@example.com'})
+
+    def test_reset_password_should_redirect(self):
+        self.assertRedirects(self.response, reverse('password_reset_done'))
+
+    def test_password_reset_send_email_failed(self):
+        self.assertEqual(0, len(mail.outbox))
+
+
+class PasswordResetDoneTest(TestCase):
+    def setUp(self):
+        url = reverse('password_reset_done')
+        self.response = self.client.get(url)
+
+    def test_password_reset_done_should_exists(self):
+        self.assertEqual(self.response.status_code, 200)
