@@ -14,6 +14,7 @@
 <table class="table">
     <thead class="thead-inverse">
         <tr>
+            <th>Id</th>
             <th>Topic</th>
             <th>Starter</th>
             <th>Replies</th>
@@ -24,11 +25,12 @@
     <tbody>
         {% for topic in board.topics.all %}
         <tr>
-            <td>{{ topic.subject }}</td>
+            <td>{{ topic.pk }}</td>
+            <td><a href="{% url 'topic_posts' board.pk topic.pk %}">{{ topic.subject }}</a></td>
             <td>{{ topic.starter.username }}</td>
             <td>0</td>
             <td>0</td>
-            <td>{{ topic.last_updated }}</td>
+            <td>{{ topic.last_update }}</td>
         </tr>
         {% endfor %}
     </tbody>

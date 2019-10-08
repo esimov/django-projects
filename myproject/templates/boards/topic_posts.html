@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title%}
+{{title}}{{block.super}} - {{ board.name}}
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'index' %}">Boards</a></li>
+<li class="breadcrumb-item"><a href="{% url 'topics' topic.board.pk %}">{{ topic.board.name }}</a></li>
+<li class="breadcrumb-item active">{{ topic.subject }}</li>
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
