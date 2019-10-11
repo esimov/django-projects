@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/simplemd.min.css' %}">
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="{% static 'js/simplemde.min.js' %}"></script>
+<script type="text/javascript">
+    var simplemde = new SimpleMDE()
+</script>
+{% endblock %}
 {% block title%}
 {{title}}{{block.super}} - {{ board.name}}
 {% endblock %}
@@ -29,7 +38,7 @@
                 <small class="text-muted">{{ post.created_at }}</small>
             </div>
         </div>
-        {{ post.message }}
+        {{ post.get_message_as_markdown }}
     </div>
 </div>
 {% endfor %}

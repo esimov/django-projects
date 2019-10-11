@@ -1,20 +1,27 @@
 from django.db.models import Count
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, ListView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, render, redirect, HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 
 from .models import Board, Topic, Post
 from .forms import NewTopicForm, PostForm
 
 
+@method_decorator(login_required, name='dispatch')
 class PostEditView(UpdateView):
     model = Post
     fields = ('message', )
     template_name = 'boards/post_edit.html'
     pk_url_kwarg = 'post_pk'
     context_object_name = 'post'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(created_by=self.request.user)
 
     def form_valid(self, form):
         post = form.save(commit=False)
@@ -24,16 +31,32 @@ class PostEditView(UpdateView):
         return redirect('topic_posts', pk=post.topic.board.pk, topic_pk=post.topic.pk)
 
 
-def index(request):
-    boards = Board.objects.all()
-    return render(request, 'boards/index.html', {'boards': boards})
+class BoardsView(ListView):
+    model = Board
+    context_object_name = 'boards'
+    template_name = 'boards/index.html'
 
 
 def board_topics(request, pk):
     board = get_object_or_404(Board, pk=pk)
 
-    topics = board.topics.order_by(
+    queryset = board.topics.order_by(
         '-last_update').annotate(replies=Count('posts'))
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(queryset, 20)
+
+    try:
+        topics = paginator.page(page)
+    except PageNotAnInteger:
+        # fallback to the first page
+        topics = paginator.page(1)
+    except EmptyPage:
+        # probably the user tried to add a page number
+        # in the url, so we fallback to the last page
+        topics = paginator.page(paginator.num_pages)
+
     return render(request, 'boards/topics.html', {'board': board, 'topics': topics})
 
 
@@ -83,9 +106,3 @@ def topic_reply(request, pk, topic_pk):
         form = PostForm()
 
     return render(request, 'boards/topic_reply.html', {'topic': topic, 'form': form})
-
-
-def post_edit(request, pk, topic_pk, post_pk):
-    post = get_object_or_404(
-        Post, topic__board__pk=pk, topic__pk=topic_pk, pk=post_pk)
-    return render(request, 'boards/post_edit.html', {'post': post})
