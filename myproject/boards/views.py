@@ -86,8 +86,11 @@ def new_topic(request, pk):
 
 def topic_posts(request, pk, topic_pk):
     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
-    topic.views += 1
-    topic.save()
+    session_key = "topic_post_view_{}".format(topic.pk)
+    if not request.session.get(session_key):
+        topic.views += 1
+        topic.save()
+        request.session[session_key] = True
     return render(request, 'boards/topic_posts.html', {'topic': topic})
 
 
