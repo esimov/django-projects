@@ -40,7 +40,7 @@ class Topic(models.Model):
     def has_many_pages(self, count=None):
         if count is None:
             count = self.get_page_count()
-        return count > 6
+        return count > 10
 
     def get_page_range(self):
         count = self.get_page_count()
