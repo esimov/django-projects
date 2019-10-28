@@ -1,3 +1,3 @@
-# django-projects
+# Board App
 
-A personal project for Django study.
+This is a board application developed in Python/Django for learning purposes.
