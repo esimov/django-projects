@@ -1,3 +1,3 @@
-# Board App
+# Django app
 
-Django application for learning purposes.
+This is a simple Django application for learning purposes.
